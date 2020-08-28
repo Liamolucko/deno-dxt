@@ -1,5 +1,5 @@
 # deno-dxt
-DXT (de)compression for Deno, with the same API as [dxt-js](https://www.npmjs.com/package/dxt-js).
+DXT (de)compression for Deno (or browser), with the same API as [dxt-js](https://www.npmjs.com/package/dxt-js).
 ## Usage
 ```typescript
 import * as dxt from "https://denopkg.com/Liamolucko/deno-dxt/mod.ts";
