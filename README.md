@@ -1,5 +1,5 @@
 # deno-dxt
-DXT (de)compression for Deno, with the same API as [dxt-js](https://www.npmjs.com/package/dxt-js).
+DXT (de)compression for Deno (or browser), with the same API as [dxt-js](https://www.npmjs.com/package/dxt-js).
 
 Like [dxt-js](https://www.npmjs.com/package/dxt-js), it's based on [libsquish](https://sourceforge.net/projects/libsquish) compiled to WebAssembly, although using WASI instead of Emscripten.
 ## Usage
