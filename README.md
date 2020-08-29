@@ -14,5 +14,6 @@ const uncompressedData = dxt.decompress(imageData, 256, 256, dxt.flags.DXT5);
 ### Requirements
 - [wasi-sdk](https://github.com/WebAssembly/wasi-sdk)
 ```sh
-sh build.sh [WASI_SDK_PATH]
+cd build
+make WASI=[WASI_SDK_PATH]
 ```

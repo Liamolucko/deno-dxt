@@ -1,51 +1,71 @@
-import squish from "./wasm.ts";
+import {
+  CompressImage,
+  DecompressImage,
+  GetStorageRequirements,
+  memory,
+  malloc,
+  free,
+} from "./wasm.ts";
 
-export const { GetStorageRequirements, CompressImage, DecompressImage } =
-  squish;
+export {
+  CompressImage,
+  DecompressImage,
+  GetStorageRequirements,
+} from "./wasm.ts";
 
-const buffer = new Uint8Array(squish.memory.buffer);
+/** Writes data to the WASM module's memory and returns a pointer. */
+function write(data: Uint8Array) {
+  const ptr = malloc(data.length);
+  const buffer = new Uint8Array(memory.buffer);
+  buffer.set(data, ptr);
+  return ptr;
+}
 
-/** Ensures instance's memory is larger than a given size. */
-function alloc(size: number, offset = 0): void {
-  if (buffer.length - offset < size) {
-    squish.memory.grow(Math.ceil((size - (buffer.length - offset)) / 65536));
-  }
+function read(ptr: number, size: number) {
+  const buffer = new Uint8Array(memory.buffer);
+  return buffer.slice(ptr, ptr + size);
 }
 
 export function compress(
-  inputData: Uint8Array,
+  input: Uint8Array,
   width: number,
   height: number,
   flags: number,
 ): Uint8Array {
-  const inputPointer = 0;
-  const outputPointer = inputData.length;
+  const inputPtr = write(input);
 
-  const targetSize = GetStorageRequirements(width, height, flags);
-  alloc(inputData.length + targetSize);
-  buffer.set(inputData, inputPointer);
+  const size = GetStorageRequirements(width, height, flags);
+  const outputPtr = malloc(size);
 
-  CompressImage(inputPointer, width, height, outputPointer, flags);
+  CompressImage(inputPtr, width, height, outputPtr, flags);
 
-  return buffer.slice(outputPointer, outputPointer + targetSize);
+  const output = read(outputPtr, size);
+
+  free(inputPtr);
+  free(outputPtr);
+
+  return output;
 }
 
 export function decompress(
-  inputData: Uint8Array,
+  input: Uint8Array,
   width: number,
   height: number,
   flags: number,
 ): Uint8Array {
-  const inputPointer = 0;
-  const outputPointer = inputData.length;
+  const inputPtr = write(input);
 
-  const targetSize = width * height * 4;
-  alloc(inputData.length + targetSize);
-  buffer.set(inputData, inputPointer);
+  const size = width * height * 4;
+  const outputPtr = malloc(size);
 
-  DecompressImage(outputPointer, width, height, inputPointer, flags);
-  
-  return buffer.slice(outputPointer, outputPointer + targetSize);
+  DecompressImage(outputPtr, width, height, inputPtr, flags);
+
+  const output = read(outputPtr, size);
+
+  free(inputPtr);
+  free(outputPtr);
+
+  return output;
 }
 
 export const flags = {
