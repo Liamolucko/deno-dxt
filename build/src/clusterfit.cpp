@@ -29,7 +29,8 @@
 #include "colourblock.h"
 #include <cfloat>
 
-void operator delete(void * p)
+// This doesn't seem to be provided by WASI for some reason?
+void operator delete(void *p)
 {
   std::free(p);
 }

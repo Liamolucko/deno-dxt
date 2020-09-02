@@ -1,17 +1,17 @@
 import {
   CompressImage,
   DecompressImage,
-  GetStorageRequirements,
-  memory,
-  malloc,
   free,
+  GetStorageRequirements,
+  malloc,
+  memory,
 } from "./wasm.ts";
 
-export {
-  CompressImage,
-  DecompressImage,
-  GetStorageRequirements,
-} from "./wasm.ts";
+export { CompressImage, DecompressImage, GetStorageRequirements };
+
+function read(ptr: number, size: number) {
+  return new Uint8Array(memory.buffer, ptr, size);
+}
 
 /** Writes data to the WASM module's memory and returns a pointer. */
 function write(data: Uint8Array) {
@@ -19,11 +19,6 @@ function write(data: Uint8Array) {
   const buffer = new Uint8Array(memory.buffer);
   buffer.set(data, ptr);
   return ptr;
-}
-
-function read(ptr: number, size: number) {
-  const buffer = new Uint8Array(memory.buffer);
-  return buffer.slice(ptr, ptr + size);
 }
 
 export function compress(
@@ -68,23 +63,31 @@ export function decompress(
   return output;
 }
 
-export const flags = {
+export enum flags {
   /** Use DXT1 compression. */
-  DXT1: (1 << 0),
+  DXT1 = 1 << 0,
+
   /** Use DXT3 compression. */
-  DXT3: (1 << 1),
+  DXT3 = 1 << 1,
+
   /** Use DXT5 compression. */
-  DXT5: (1 << 2),
+  DXT5 = 1 << 2,
+
+  /** Use BC4 compression. */
+  BC4 = 1 << 3,
+
+  /** Use a slow but high quality colour compressor (the default). */
+  ColourClusterFit = 1 << 5,
+
+  /** Use a fast but low quality colour compressor. */
+  ColourRangeFit = 1 << 6,
+
+  /** Weight the colour by alpha during cluster fit (disabled by default). */
+  WeightColourByAlpha = 1 << 7,
+
   /** Use a very slow but very high quality colour compressor. */
-  ColourIterativeClusterFit: (1 << 8),
-  /**! Use a slow but high quality colour compressor (the default). */
-  ColourClusterFit: (1 << 3),
-  /**! Use a fast but low quality colour compressor. */
-  ColourRangeFit: (1 << 4),
-  /**! Use a perceptual metric for colour error (the default). */
-  ColourMetricPerceptual: (1 << 5),
-  /**! Use a uniform metric for colour error. */
-  ColourMetricUniform: (1 << 6),
-  /**! Weight the colour by alpha during cluster fit (disabled by default). */
-  WeightColourByAlpha: (1 << 7),
-};
+  ColourIterativeClusterFit = 1 << 8,
+
+  /** Source is BGRA rather than RGBA */
+  SourceBGRA = 1 << 9,
+}

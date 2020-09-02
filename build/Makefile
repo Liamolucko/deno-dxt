@@ -1,9 +1,8 @@
-DENO ?= deno
 WASI ?= ./wasi-sdk
 CC    = $(WASI)/bin/clang
 
 OUT_WA = "libsquish.wasm"
-OUT_BN = "libsquish.js"
+OUT_BN = "bin.ts"
 
 WASI_DLD = "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-11/wasi-sdk-11.0-linux.tar.gz"
 WASI_TAR = wasi_dl_linux.tar.gz
@@ -27,7 +26,7 @@ build:
 	$(CC) $(WAFLG) $(FLGS) $(INCS) $(CSRC) -o $(OUT_WA)
 
 bundle:
-	@echo "export default \"$(shell base64 -w0 libsquish.wasm)\";" > bin.ts
+	@echo "export default \"$(shell base64 -w0 libsquish.wasm)\";" > $(OUT_BN)
 
 debug: FLGS += $(DFLG)
 debug: build

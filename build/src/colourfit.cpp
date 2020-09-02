@@ -26,6 +26,7 @@
 #include "colourfit.h"
 #include "colourset.h"
 
+// WASI doesn't have error handling at the moment, hence the infinite loop
 extern "C" void __cxa_pure_virtual() { while (1); }
 
 namespace squish {
