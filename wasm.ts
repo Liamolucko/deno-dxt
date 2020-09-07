@@ -28,7 +28,7 @@ interface SquishExports {
 }
 
 const module = new WebAssembly.Module(base64.decode(bin));
-const instance = new WebAssembly.Instance<SquishExports>(module);
+const instance = new WebAssembly.Instance(module);
 
 export default instance;
 
@@ -39,4 +39,4 @@ export const {
   malloc,
   free,
   memory,
-} = instance.exports;
+} = instance.exports as unknown as SquishExports;
