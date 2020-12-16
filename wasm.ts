@@ -27,8 +27,7 @@ interface SquishExports {
   memory: WebAssembly.Memory;
 }
 
-const module = new WebAssembly.Module(base64.decode(bin));
-const instance = new WebAssembly.Instance(module);
+const { instance } = await WebAssembly.instantiate(base64.decode(bin));
 
 export default instance;
 
