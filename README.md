@@ -7,7 +7,8 @@ Like [dxt-js](https://www.npmjs.com/package/dxt-js), it's based on [libsquish](h
 import * as dxt from "https://denopkg.com/Liamolucko/deno-dxt/mod.ts";
 const imageData = getRawRGBADataFromSomeWhere();
 const compressedData = dxt.compress(imageData, 256, 256, dxt.flags.DXT5); // Assumes 256x256 image
-const uncompressedData = dxt.decompress(imageData, 256, 256, dxt.flags.DXT5);
+const uncompressedData = dxt.decompress(compressedData, 256, 256, dxt.flags.DXT5);
+console.log(uncompressedData);
 ```
 
 ## Build
