@@ -1,5 +1,5 @@
 WASI ?= ./wasi-sdk
-CC    = $(WASI)/bin/clang
+CC    = $(WASI)/bin/clang++
 
 OUT_WA = "libsquish.wasm"
 OUT_BN = "bin.ts"
@@ -13,32 +13,21 @@ endif
 
 CSRC  = ""
 CSRC += $(shell find ./src  -name "*.cpp")
-FLGS  = -Wall
-RFLG  = -Os
-DFLG  = -DDEBUG_BUILD
-WAFLG = --target=wasm32-unknown-wasi -Wl,--no-entry -nostartfiles --sysroot $(WASI)/share/wasi-sysroot\
-        -DWASI_BUILD -Wl,--export,malloc -Wl,--export,free -fno-rtti
-INCS  = -Ilib
+FLGS  = -Wall -Os
+WAFLG = --target=wasm32-unknown-wasi -Wl,--no-entry -nostartfiles --sysroot $(WASI)/share/wasi-sysroot
+EXPORTS = -Wl,--export,malloc,--export,free,--export,GetStorageRequirements,--export,CompressImage,--export,DecompressImage
 
-all: release
+all: build
+all: bundle
 
 build:
-	$(CC) $(WAFLG) $(FLGS) $(INCS) $(CSRC) -o $(OUT_WA)
+	$(CC) $(WAFLG) $(FLGS) $(CSRC) $(EXPORTS) -o $(OUT_WA)
 
 bundle:
 	@echo "export default \"$(shell base64 -w0 libsquish.wasm)\";" > $(OUT_BN)
 
-debug: FLGS += $(DFLG)
-debug: build
-debug: bundle
-
-release: FLGS += $(RFLG)
-release: build
-release: bundle
-
 dlwasi:
 	curl -L "$(WASI_DLD)" -o "$(WASI_TAR)"
-	sed -n '/${WASI_TAR}/p' ".checksums" | shasum -c -
 	rm -rf "wasi-sdk"
 	tar -xzvf "$(WASI_TAR)"
 	mv "wasi-sdk-11.0" "wasi-sdk"

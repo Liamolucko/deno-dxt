@@ -1,4 +1,4 @@
-import * as base64 from "https://deno.land/std@0.67.0/encoding/base64.ts";
+import * as base64 from "https://deno.land/std@0.88.0/encoding/base64.ts";
 import bin from "./build/bin.ts";
 
 interface SquishExports {
@@ -27,7 +27,9 @@ interface SquishExports {
   memory: WebAssembly.Memory;
 }
 
-const { instance } = await WebAssembly.instantiate(base64.decode(bin));
+const { instance } = await WebAssembly.instantiate(base64.decode(bin), {
+  "wasi_snapshot_preview1": { fd_close() {}, fd_seek() {}, fd_write() {} },
+});
 
 export default instance;
 

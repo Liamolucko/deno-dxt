@@ -29,12 +29,6 @@
 #include "colourblock.h"
 #include <cfloat>
 
-// This doesn't seem to be provided by WASI for some reason?
-void operator delete(void *p)
-{
-  std::free(p);
-}
-
 namespace squish {
 
 ClusterFit::ClusterFit( ColourSet const* colours, int flags, float* metric )
