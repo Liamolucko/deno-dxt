@@ -63,31 +63,31 @@ export function decompress(
   return output;
 }
 
-export enum flags {
+export const flags = {
   /** Use DXT1 compression. */
-  DXT1 = 1 << 0,
+  DXT1: 1 << 0,
 
   /** Use DXT3 compression. */
-  DXT3 = 1 << 1,
+  DXT3: 1 << 1,
 
   /** Use DXT5 compression. */
-  DXT5 = 1 << 2,
+  DXT5: 1 << 2,
 
   /** Use BC4 compression. */
-  BC4 = 1 << 3,
+  BC4: 1 << 3,
 
   /** Use a slow but high quality colour compressor (the default). */
-  ColourClusterFit = 1 << 5,
+  ColourClusterFit: 1 << 5,
 
   /** Use a fast but low quality colour compressor. */
-  ColourRangeFit = 1 << 6,
+  ColourRangeFit: 1 << 6,
 
   /** Weight the colour by alpha during cluster fit (disabled by default). */
-  WeightColourByAlpha = 1 << 7,
+  WeightColourByAlpha: 1 << 7,
 
   /** Use a very slow but very high quality colour compressor. */
-  ColourIterativeClusterFit = 1 << 8,
+  ColourIterativeClusterFit: 1 << 8,
 
   /** Source is BGRA rather than RGBA */
-  SourceBGRA = 1 << 9,
-}
+  SourceBGRA: 1 << 9,
+};
